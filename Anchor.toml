@@ -1,0 +1,14 @@
+[features]
+seeds = false
+[programs.devnet]
+pda_escrow = "G9BjoQUUVH12e6gfLbeTQNpeEzjYSASJ7qb7iqebD9Sn"
+
+[registry]
+url = "https://anchor.projectserum.com"
+
+[provider]
+cluster = "https://wild-cool-shadow.solana-devnet.quiknode.pro/3c47aa058a1cb75c8bc2b9fcc698e0afc8ece9de/"
+wallet = "/home/user/.config/solana/id.json"
+
+[scripts]
+test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
