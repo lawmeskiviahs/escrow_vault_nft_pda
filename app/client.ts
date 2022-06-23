@@ -29,7 +29,9 @@ async function main() {
 
   const fromTokenAccount = new anchor.web3.PublicKey("8QhuyEzMW6fuPjVXSpVr2d4Uneq5D9HKe38wS5zeDLoB");
   const mint = new anchor.web3.PublicKey("J6PXH6vJZhS8SNzVqathiRCLPwmsetAYQHSqwgadofxJ");
-  // // const toAccount = new anchor.web3.PublicKey("HAWuxhwmzqt1exoiHmhR2WmzE6N8HAsDvvSqfVRyvwD8");
+  const paajipublicKey= new anchor.web3.PublicKey("HAWuxhwmzqt1exoiHmhR2WmzE6N8HAsDvvSqfVRyvwD8");
+  
+  // const toToke nAccount = new anchor.web3.PublicKey("HAWuxhwmzqt1exoiHmhR2WmzE6N8HAsDvvSqfVRyvwD8");
   // const tokenProgram = new anchor.web3.PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 
     // const tx = await program.methods.transferLamports().accounts({
@@ -48,11 +50,26 @@ async function main() {
       programId
     );
 
-    // console.log(statePubkey.toBase58());
-    console.log(escrowPubkey.toBase58());
-    
+    // const toTokenAccount = await spl.Token.getAssociatedTokenAddress(
+    //   spl.ASSOCIATED_TOKEN_PROGRAM_ID,
+    //   spl.TOKEN_PROGRAM_ID,
+    //   mint,
+    //   paajipublicKey
+    // )
+  //   let toTokenAccount = await spl.getAccount(connection, paajipublicKey);
+  // console.log(toTokenAccount.address.publicKey);
 
-    // const tx = await program.methods.transferNft(stateBump, escrowBump).accounts({
+  const [toTokenAccount] = await web3.PublicKey.findProgramAddress(
+    [paajipublicKey.toBuffer(), spl.TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+    spl.ASSOCIATED_TOKEN_PROGRAM_ID
+);
+  
+// console.log(toTokenAccount.toBase58());
+
+    // console.log(statePubkey.toBase58());
+    // console.log(escrowPubkey.toBase58());
+    
+    // const tx = await program.methods.initialize().accounts({
     //   state: statePubkey,
     //   escrowWallet: escrowPubkey,
     //   sender: creator.publicKey,
@@ -60,7 +77,27 @@ async function main() {
     //   fromTokenAccount: fromTokenAccount,
     //   systemProgram: anchor.web3.SystemProgram.programId,
     //   tokenProgram: spl.TOKEN_PROGRAM_ID,
-    //   // rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    //   rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    // }).signers([creator]).rpc();
+
+    const tx = await program.methods.transferNft(stateBump, escrowBump).accounts({
+      state: statePubkey,
+      escrowWallet: escrowPubkey,
+      sender: creator.publicKey,
+      receiver: paajipublicKey,
+      fromTokenAccount:fromTokenAccount,
+      mint: mint,
+      toTokenAccount: toTokenAccount,
+      systemProgram: anchor.web3.SystemProgram.programId,
+      tokenProgram: spl.TOKEN_PROGRAM_ID,
+      associatedTokenProgram: spl.ASSOCIATED_TOKEN_PROGRAM_ID,
+      rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+    }).signers([creator]).rpc();
+
+    //   const tx = await program.methods.transferSolInto(stateBump).accounts({
+    //   state: statePubkey,
+    //   sender: creator.publicKey,
+    //   systemProgram: anchor.web3.SystemProgram.programId,
     // }).signers([creator]).rpc();
 
     // console.log("system program id", web3.SystemProgram.programId.toBase58());
@@ -68,15 +105,6 @@ async function main() {
     // console.log("rent pubkey", anchor.web3.SYSVAR_RENT_PUBKEY.toBase58());
     
     
-    
-
-    // const tx = await program.methods.transferNft(baseAccountPDABump).accounts({
-    //   fromAccount: baseAccount,
-    //   fromTokenAccount: toTokenAccount,
-    //   toTokenAccount: fromTokenAccount,
-    //   tokenProgram: tokenProgram,
-    // }).signers([]).rpc();
-
 }
 
 main()
